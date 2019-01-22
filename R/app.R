@@ -1,8 +1,10 @@
 #' interface to txregnet resource for lung disease genomics
 #' @import dplyr magrittr annotate gwascat shiny
 #' @param regexpr character(1) will be used to grep taggedPhenoDF$term
+#' @param bpp a BiocParallel bpparam instance
 #' @export
-lungGen = function(regexpr="lung|asthma|pulmonary") {
+lungGen = function(regexpr="lung|asthma|pulmonary", bpp=BiocParallel::SerialParam()) {
+register(bpp)
 data(taggedPhenoDF)
 data(lgenGWC_17)
 seqlevelsStyle(lgenGWC_17) = "UCSC"
@@ -26,13 +28,13 @@ ui = fluidPage(
       verbatimTextOutput("pms")
       ),
      tabPanel("loci",
-      dataTableOutput("snps")
+      DT::dataTableOutput("snps")
       ),
      tabPanel("cell",
       verbatimTextOutput("cells")
       ),
      tabPanel("states",
-      dataTableOutput("states")
+      DT::dataTableOutput("states")
       )
      )
     )
@@ -60,7 +62,7 @@ server = function(input, output) {
      }
    ans
    })
-  output$snps = renderDataTable({
+  output$snps = DT::renderDataTable({
    hitgr = phenoToHits(input$pheno, lgenGWC_17)
    names(hitgr) = hitgr$SNPS
    dfr = as.data.frame(mcols(phenoToHits(input$pheno, lgenGWC_17))[,c("CHR_ID", "CHR_POS", "SNPS", "PUBMEDID")])
@@ -70,12 +72,12 @@ server = function(input, output) {
    dfr$CHR_POS = as.integer(dfr$CHR_POS)
    dfr$PUBMEDID = paste0("<a href=https://www.ncbi.nlm.nih.gov/pubmed/?term=", dfr$PUBMEDID, " target='_blank'>PMID ", dfr$PUBMEDID, "</a>")
    o = order(dfr$CHR_POS)
-   datatable(dfr[o,], escape=FALSE)
+   DT::datatable(dfr[o,], escape=FALSE)
    })
-  output$states = renderDataTable({
+  output$states = DT::renderDataTable({
     xx = phenoToHits(input$pheno, lgenGWC_17)
     names(xx) = xx$SNPS
-    states(xx, locErmaSet[, input$cellpicks])
+    DT::datatable(states(xx, locErmaSet[, input$cellpicks]))
     })
   }
 runApp(list(ui=ui, server=server))
