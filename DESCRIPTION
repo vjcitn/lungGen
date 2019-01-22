@@ -1,0 +1,15 @@
+Package: lungGen
+Title: Genomic contexts of lung-disease associated SNP
+Description: Genomic contexts of lung-disease associated SNP
+Version: 0.0.1
+Author: Vince Carey
+Suggests: knitr
+Depends: R (>= 3.6.0), gwascat, erma
+Imports: shiny, dplyr, magrittr, annotate, gwascat
+Maintainer: VJ Carey <stvjc@channing.harvard.edu>
+License: Artistic-2.0
+LazyLoad: yes
+biocViews: variants
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+Encoding: UTF-8
