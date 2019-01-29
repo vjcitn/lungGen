@@ -19,7 +19,8 @@ ui = fluidPage(
     selectInput("pheno", "phenotype", 
          choices=grep(regexpr, taggedPhenoDF$term, value=TRUE), selected = "asthma"),
     helpText("epigenomes available:"),
-    checkboxGroupInput("cellpicks", "cells", choices=st, selected=st[1])
+    selectInput("cellpicks", "cells", choices=st, selected=st[1], multiple=TRUE),
+    uiOutput("genesel")
     ),
    mainPanel(
     tabsetPanel(
@@ -35,6 +36,9 @@ ui = fluidPage(
       ),
      tabPanel("states",
       DT::dataTableOutput("states")
+      ),
+     tabPanel("txmodel",
+      plotlyOutput("txplot")
       )
      )
     )
@@ -65,7 +69,7 @@ server = function(input, output) {
   output$snps = DT::renderDataTable({
    hitgr = phenoToHits(input$pheno, lgenGWC_17)
    names(hitgr) = hitgr$SNPS
-   dfr = as.data.frame(mcols(phenoToHits(input$pheno, lgenGWC_17))[,c("CHR_ID", "CHR_POS", "SNPS", "PUBMEDID")])
+   dfr = as.data.frame(mcols(phenoToHits(input$pheno, lgenGWC_17))[,c("CHR_ID", "CHR_POS", "SNPS", "MAPPED_GENE", "PUBMEDID")])
    chkdup = apply(dfr, 1, paste0, collapse=":")
    todr = which(duplicated(chkdup))
    if (length(todr)>0) dfr = dfr[-todr,]
@@ -79,7 +83,22 @@ server = function(input, output) {
     names(xx) = xx$SNPS
     DT::datatable(states(xx, locErmaSet[, input$cellpicks]))
     })
-  }
+  output$genesel = renderUI({
+   dfr = as.data.frame(mcols(phenoToHits(input$pheno, lgenGWC_17))[,c("CHR_ID", "CHR_POS", "SNPS", "MAPPED_GENE", "PUBMEDID", "REPORTED GENE(S)")])
+   print(head(dfr))
+   chkdup = apply(dfr, 1, paste0, collapse=":")
+   todr = which(duplicated(chkdup))
+   if (length(todr)>0) dfr = dfr[-todr,]
+   gns = as.character(dfr$REPORTED.GENE.S.)
+   gns = sort(unique(unlist(strsplit(gns, ", "))))
+   selectInput("gsel", "mapped gene", choices=gns, selected=gns[1])
+   })
+  output$txplot = renderPlotly({
+    vis = try(ggvisForSymbol(input$gsel))
+    if (inherits(vis, "try-error")) warning("can't build gene model")
+    ggplotly(vis)
+    })
+  } # end server
 runApp(list(ui=ui, server=server))
 }
 
