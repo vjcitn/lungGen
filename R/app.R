@@ -1,5 +1,16 @@
 #' interface to txregnet resource for lung disease genomics
-#' @import dplyr magrittr annotate gwascat shiny
+#' @import magrittr annotate gwascat shiny ggplot2
+#' @importFrom dplyr filter select
+#' @importFrom GenomicFeatures genes
+#' @importFrom S4Vectors mcols
+#' @importFrom IRanges subsetByOverlaps
+#' @importFrom plotly plotlyOutput renderPlotly ggplotly
+#' @importFrom BiocParallel register SerialParam bplapply
+#' @importFrom AnnotationFilter SymbolFilter
+#' @importFrom erma cellTypes
+#' @importFrom gggmvis ggvisForSymbol
+#' @importFrom SummarizedExperiment "rowRanges<-"
+#' @importFrom DelayedArray "rowRanges"
 #' @param regexpr character(1) will be used to grep taggedPhenoDF$term
 #' @param bpp a BiocParallel bpparam instance
 #' @export
@@ -7,10 +18,10 @@ lungGen = function(regexpr="lung|asthma|pulmonary", bpp=BiocParallel::SerialPara
 register(bpp)
 data(taggedPhenoDF)
 data(lgenGWC_17)
-seqlevelsStyle(lgenGWC_17) = "UCSC"
+GenomeInfoDb::seqlevelsStyle(lgenGWC_17) = "UCSC"
 data(locErmaSet)
 ct = cellTypes(locErmaSet)
-data(short_celltype)
+data(short_celltype, package="erma")
 st = short_celltype[ct]
 ui = fluidPage(
   sidebarLayout(
@@ -38,6 +49,7 @@ ui = fluidPage(
       DT::dataTableOutput("states")
       ),
      tabPanel("txmodel",
+      helpText("Gene model: red lines denote exons, each transcript vertically displaced.  Black points are 1+predicted probability of being within R^2 .8 of a GRASP SNP."),
       plotlyOutput("txplot")
       )
      )
@@ -94,9 +106,19 @@ server = function(input, output) {
    selectInput("gsel", "mapped gene", choices=gns, selected=gns[1])
    })
   output$txplot = renderPlotly({
-    vis = try(ggvisForSymbol(input$gsel))
-    if (inherits(vis, "try-error")) warning("can't build gene model")
-    ggplotly(vis)
+    vis = try(ggvisForSymbol(input$gsel, arrmm=2.3))
+    validate(need(vis, "can't build gene model; obsolete symbol?"))
+#
+# FIXME -- assuming v79 (hg38)
+#
+    g1 = genes(EnsDb.Hsapiens.v79::EnsDb.Hsapiens.v79, filter=AnnotationFilter::SymbolFilter(input$gsel))+1000
+    GenomeInfoDb::seqlevelsStyle(g1) = "UCSC"
+    preds = subsetByOverlaps(predGR, g1)
+    preddf = data.frame(start=start(preds), pred=preds$pred+1, rsid=names(preds))
+    preddf = preddf[preddf$pred > 1.03,] # FIXME
+    ggplotly(vis + geom_point(data=preddf, 
+        aes(x=start, y=pred, text=rsid)) + 
+        theme(axis.text.y=element_blank()) + ylab(" "))
     })
   } # end server
 runApp(list(ui=ui, server=server))

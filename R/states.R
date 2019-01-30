@@ -1,3 +1,6 @@
+#' @importFrom GenomicFiles files
+#' @importFrom rtracklayer import
+#' @importFrom GenomeInfoDb seqnames
 states = function(snpgr, ermaset, genome="GRCh38") {
   rowRanges(ermaset) = snpgr
   efil = files(ermaset)
@@ -16,7 +19,7 @@ states = function(snpgr, ermaset, genome="GRCh38") {
     rownames(ans) = NULL
     ans$start.state = start(imp)
     ans$end.state = end(imp)
-    ans$seqnames = as.character(seqnames(imp))
+    ans$seqnames = as.character(GenomeInfoDb::seqnames(imp))
     ans
     }
    )

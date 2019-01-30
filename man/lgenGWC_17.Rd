@@ -4,7 +4,7 @@
 \name{lgenGWC_17}
 \alias{lgenGWC_17}
 \title{illustrative excerpt from EBI GWAS catalog for jan 2019; limit to chr17}
-\format{gwaswloc instance as defined in gwascat package}
+\format{gwaswloc instance as defined in gwascat package, GRCh38 addresses}
 \usage{
 lgenGWC_17
 }

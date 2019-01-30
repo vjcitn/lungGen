@@ -6,7 +6,12 @@
 #' lungGen::taggedPhenoDF
 "taggedPhenoDF"
 #' illustrative excerpt from EBI GWAS catalog for jan 2019; limit to chr17
-#' @format gwaswloc instance as defined in gwascat package
+#' @format gwaswloc instance as defined in gwascat package, GRCh38 addresses
 #' @examples
 #' lungGen::lgenGWC_17
 "lgenGWC_17"
+#' location, rsid and predicted probability of phenorelevance based on jan 30 2019 model
+#' @format GRanges instance, GRCh38 addresses
+#' @examples
+#' head(predGR)
+"predGR"
