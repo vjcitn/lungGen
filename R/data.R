@@ -15,3 +15,6 @@
 #' @examples
 #' head(predGR)
 "predGR"
+#' liftOver support for erma data in hg19
+#' @format chain imported using rtracklayer
+"ch19to38"
