@@ -1,0 +1,56 @@
+---
+title: "lungGen: SNP annotation for lung disease"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{lungGen overview}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+# Introduction
+
+We are using a variety of reference resources to
+characterize genomic context of DNA variants.
+
+lungGen is a prototypical interactive resource to
+help explore context.  Upon installation and
+attachment of the package, invoking `lungGen()`
+produces a browser page for interactive exploration.
+
+# Interface components
+
+## Overview
+
+Sidebar panel allows selection of phenotype and gene
+of interest.  Phenotype selection filters the GWAS
+catalog (in this release, limited to GWAS hits on chr17),
+gene selection is used for transcript model display
+to be discussed below.
+
+![overview](toppage.png)
+
+## Literature references
+
+Note that a brief summary of all papers cited in the
+GWAS catalog is provided on the front panel.  This will
+be expanded to support abstract retrieval.  Locus-specific links to
+pubmed are on the next tab.
+
+## Locus details
+
+![loci](loci.png)
+
+## Epigenetic states enclosing loci
+
+![states](states.png)
+
+## Transcript model with predicted phenorelevance scores
+
+![txmodel](txmodel.png)

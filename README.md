@@ -1,2 +1,1 @@
-# lungGen
-annotation support for lung disease SNP
+vignettes/lungGen.Rmd
