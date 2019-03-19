@@ -45,7 +45,7 @@ ui = fluidPage(
       DT::dataTableOutput("states")
       ),
      tabPanel("txmodel",
-      helpText("Gene model: red lines denote exons, each transcript vertically displaced.  Black points are 1+predicted probability of being within R^2 .8 of a GRASP SNP."),
+      helpText("Gene model: red lines denote exons, each transcript vertically displaced.  Colored points are 1+predicted probability of being within R^2 .8 of a GRASP SNP.  Hover over for details.  Colors are based on ChromHMM states for selected cell type."),
       plotlyOutput("txplot")
       )
      )
