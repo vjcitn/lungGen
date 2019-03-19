@@ -11,10 +11,16 @@
 #' @importFrom gggmvis ggvisForSymbol
 #' @importFrom SummarizedExperiment "rowRanges<-"
 #' @importFrom DelayedArray "rowRanges"
-#' @param regexpr character(1) will be used to grep taggedPhenoDF$term
-#' @param bpp a BiocParallel bpparam instance
+# #' @param regexpr character(1) will be used to grep taggedPhenoDF$term
+# #' @param bpp a BiocParallel bpparam instance
 #' @export
-lungGen = function(regexpr="lung|asthma|pulmonary", bpp=BiocParallel::SerialParam()) {
+lungGen = function() {
+if (!requireNamespace("shiny")) stop("install shiny to use this function")
+setwd(system.file("app", package="lungGen"))
+shiny::runApp()
+}
+
+oldlungGen = function(regexpr="lung|asthma|pulmonary", bpp=BiocParallel::SerialParam()) {
 register(bpp)
 data(taggedPhenoDF)
 data(lgenGWC_17)

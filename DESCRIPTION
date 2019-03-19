@@ -5,7 +5,7 @@ Version: 0.0.10
 Author: Vince Carey
 Suggests: knitr, AnnotationDbi
 Depends: R (>= 3.5.0), AnnotationFilter, ggplot2, IRanges
-Imports: shiny, dplyr, magrittr, annotate, gwascat, DT, BiocParallel,
+Imports: shiny, dplyr, magrittr, annotate, DT, BiocParallel,
 	erma, gwascat, rtracklayer, plotly, GenomicFiles, GenomicRanges,
 	GenomeInfoDb, ensembldb, gggmvis, ggplot2,
 	SummarizedExperiment, S4Vectors, GenomicFeatures, DelayedArray

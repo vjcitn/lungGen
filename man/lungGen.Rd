@@ -4,13 +4,7 @@
 \alias{lungGen}
 \title{interface to txregnet resource for lung disease genomics}
 \usage{
-lungGen(regexpr = "lung|asthma|pulmonary",
-  bpp = BiocParallel::SerialParam())
-}
-\arguments{
-\item{regexpr}{character(1) will be used to grep taggedPhenoDF$term}
-
-\item{bpp}{a BiocParallel bpparam instance}
+lungGen()
 }
 \description{
 interface to txregnet resource for lung disease genomics
