@@ -89,7 +89,10 @@ server = function(input, output) {
    chkdup = apply(dfr, 1, paste0, collapse=":")
    todr = which(duplicated(chkdup))
    if (length(todr)>0) dfr = dfr[-todr,]
+# FIXME -- assuming v79
+   okgns = AnnotationDbi::keys(EnsDb.Hsapiens.v79::EnsDb.Hsapiens.v79, keytype="SYMBOL")
    gns = as.character(dfr$REPORTED.GENE.S.)
+   gns = intersect(gns, okgns)
    gns = sort(unique(unlist(strsplit(gns, ", "))))
    selectInput("gsel", "mapped gene", choices=gns, selected=gns[1])
    })
@@ -103,7 +106,7 @@ server = function(input, output) {
     GenomeInfoDb::seqlevelsStyle(g1) = "UCSC"
     preds = subsetByOverlaps(predGR, g1)
     stt = states(preds, locErmaSet[, input$cellpicks])
-    save(stt, file="stt.rda")
+    #save(stt, file="stt.rda")
     preddf = data.frame(start=start(preds), pred=preds$pred+1, rsid=names(preds), state=stt$state)
     preddf = preddf[preddf$pred > 1.03,] # FIXME
     ggplotly(vis + geom_point(data=preddf, 
